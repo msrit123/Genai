@@ -1,0 +1,35 @@
+ 3) A customer support chatbot must understand misspelled product name
+
+3 # Install (Colab)
+!pip install -q gensim
+
+from gensim.models import FastText, Word2Vec
+from gensim.utils import simple_preprocess
+
+# Sample product reviews
+reviews = [
+    "i love the samsung galaxy phone",
+    "this samsung phone camera is great",
+    "galaxy mobile battery is good",
+    "apple iphone has great display",
+    "iphone camera quality is nice",
+    "samsung mobile is fast and smooth"
+]
+
+sentences = [simple_preprocess(r) for r in reviews]
+
+# Train models
+ft = FastText(sentences, vector_size=50, window=3, min_count=1, epochs=20)
+w2v = Word2Vec(sentences, vector_size=50, window=3, min_count=1, epochs=20)
+
+# Misspelled word
+word = input("Enter a misspelled product name: ")
+
+print("\nFastText similar words:")
+print(ft.wv.most_similar(word, topn=5))
+
+print("\nWord2Vec similar words:")
+try:
+    print(w2v.wv.most_similar(word, topn=5))
+except:
+    print("Word2Vec cannot handle unseen word.")
