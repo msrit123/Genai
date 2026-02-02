@@ -1,0 +1,32 @@
+a)
+!pip install -q diffusers transformers accelerate imageio imageio[ffmpeg] torch
+
+from diffusers import DiffusionPipeline
+import torch, imageio, numpy as np
+
+pipe = DiffusionPipeline.from_pretrained(
+    "damo-vilab/text-to-video-ms-1.7b",
+    torch_dtype=torch.float16
+).to("cuda")
+
+frames = pipe("A robot teaching students in a smart classroom", num_frames=8).frames[0]
+
+imageio.mimsave("video.mp4", [np.array(f) for f in frames], fps=8)
+print("video.mp4 generated")
+
+b)
+!pip install -q diffusers moviepy torch
+
+from diffusers import StableDiffusionPipeline
+from moviepy.editor import ImageClip
+import torch
+
+pipe = StableDiffusionPipeline.from_pretrained(
+    "runwayml/stable-diffusion-v1-5",
+    torch_dtype=torch.float16
+).to("cuda")
+
+img = pipe("A student learning with AI in a digital classroom").images[0]
+img.save("story.png")
+
+ImageClip("story.png").set_duration(1).write_videofile("story_video.mp4", fps=24)
