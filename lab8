@@ -1,0 +1,36 @@
+#8a
+from transformers import pipeline
+
+gen = pipeline("text-generation", model="gpt2")
+
+out = gen(
+    "Write a short motivational story for students.\nStory:",
+    max_length=80,
+    do_sample=True,
+    temperature=0.8,
+    no_repeat_ngram_size=3
+)
+
+print(out[0]["generated_text"])
+
+
+# 8b
+from transformers import pipeline
+
+sent = pipeline("sentiment-analysis")
+print(sent("The course was very helpful and the trainer was excellent."))
+
+
+# 8c
+from transformers import pipeline
+
+summ = pipeline("summarization", model="facebook/bart-large-cnn")
+
+text = """The training program was very informative and well structured.
+The instructor explained every topic clearly and answered all student questions.
+Many students felt more confident after completing the course."""
+
+print(summ(text, max_length=30, min_length=12, do_sample=False)[0]["summary_text"])
+
+
+
