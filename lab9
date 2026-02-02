@@ -1,0 +1,30 @@
+ # 9a
+from transformers import pipeline
+gen = pipeline("text-generation", model="gpt2")
+
+print(gen("Write a short promotional text for a new smart fitness watch.",
+          max_length=60,do_sample=True,no_repeat_ngram_size=3)[0]["generated_text"])
+
+
+#9b
+!pip install transformers pillow -q
+from transformers import BlipProcessor, BlipForConditionalGeneration
+from google.colab import files
+from PIL import Image
+
+u = files.upload()
+img = Image.open(list(u.keys())[0]).convert("RGB")
+
+p = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+m = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
+
+out = m.generate(**p(img, return_tensors="pt"))
+print(p.decode(out[0], skip_special_tokens=True))
+
+
+# 9c
+from transformers import pipeline
+summ = pipeline("summarization", model="facebook/bart-large-cnn")
+
+text = "This smartwatch tracks heart rate, steps and sleep and helps users stay healthy every day."
+print(summ(text, max_length=25, min_length=10, do_sample=False)[0]["summary_text"])
