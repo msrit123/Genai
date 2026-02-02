@@ -1,0 +1,69 @@
+5 #
+# Install required libraries
+!pip install transformers torch -q
+
+from transformers import pipeline
+
+# ---------- Load models ----------
+# GPT-2 for text generation
+generator = pipeline("text-generation", model="gpt2")
+
+# BART for summarization
+summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+
+
+# ---------------------------------------------------
+# 1. Generate an exam notification for students
+# ---------------------------------------------------
+exam_prompt = (
+    "Write a formal university exam notification for students. "
+    "Mention exam dates, instructions, hall ticket requirement and reporting time."
+)
+
+exam_notice = generator(
+    exam_prompt,
+    max_length=120,
+    num_return_sequences=1
+)
+
+print("------ Exam Notification ------\n")
+print(exam_notice[0]["generated_text"])
+
+
+# ---------------------------------------------------
+# 2. Generate a short inspirational message for final-year students
+# ---------------------------------------------------
+motivation_prompt = (
+    "Write a short inspirational message for final year students who are about to graduate."
+)
+
+motivation = generator(
+    motivation_prompt,
+    max_length=80,
+    num_return_sequences=1
+)
+
+print("\n------ Inspirational Message ------\n")
+print(motivation[0]["generated_text"])
+
+
+# ---------------------------------------------------
+# 3. Summarize a given academic paragraph
+# ---------------------------------------------------
+paragraph = """
+Machine learning is a branch of artificial intelligence that focuses on building
+systems capable of learning from data and improving their performance over time.
+These systems are widely used in healthcare, finance, education and transportation.
+By identifying patterns in large datasets, machine learning models help in decision
+making, prediction and automation of complex processes.
+"""
+
+summary = summarizer(
+    paragraph,
+    max_length=40,
+    min_length=15,
+    do_sample=False
+)
+
+print("\n------ Summary ------\n")
+print(summary[0]["summary_text"])
