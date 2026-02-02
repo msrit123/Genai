@@ -1,0 +1,34 @@
+# 6a
+!pip install transformers pillow -q
+
+from transformers import BlipProcessor, BlipForConditionalGeneration
+from PIL import Image
+from google.colab import files
+
+u = files.upload()
+img = Image.open(list(u.keys())[0]).convert("RGB")
+
+p = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+m = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
+
+out = m.generate(**p(img, return_tensors="pt"))
+print(p.decode(out[0], skip_special_tokens=True))
+
+
+# 6b
+from diffusers import StableDiffusionPipeline
+import torch
+from IPython.display import display
+
+pipe = StableDiffusionPipeline.from_pretrained(
+    "runwayml/stable-diffusion-v1-5",
+    torch_dtype=torch.float16
+)
+
+pipe.enable_attention_slicing()   # reduces memory
+pipe = pipe.to("cuda")
+
+prompt = "A magical fantasy landscape with glowing waterfalls and floating islands"
+
+img = pipe(prompt, num_inference_steps=20).images[0]
+display(img)
