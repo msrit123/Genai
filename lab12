@@ -1,0 +1,7 @@
+# 12 
+from transformers import pipeline
+
+clf = pipeline("sentiment-analysis")
+
+feedback = "The class was very helpful and the teacher explained clearly."
+print(clf(feedback))
