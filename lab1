@@ -1,0 +1,40 @@
+1) A job portal company wants to help users understand skill relationships 
+in the IT domain.
+# a) Load pre-trained word embeddings and take any input word from the user.
+Return top 5 similar words.
+Solution:
+!pip install gensim
+
+from gensim.models import KeyedVectors
+from gensim.downloader import load
+
+model = load("glove-wiki-gigaword-50")
+print("Model Loaded Successfully!")
+
+def find_similar_words(word, topn=5):
+    try:
+        similar = model.most_similar(word, topn=topn)
+        return similar
+    except KeyError:
+        return f"'{word}' not found in vocabulary."
+word = input("Enter a word: ")
+result = find_similar_words(word)
+
+b)
+print("\nTop similar words:")
+if isinstance(result, str):
+    print(result)
+else:
+    for w, score in result:
+        print(f"{w}  --> similarity: {score:.4f}")
+
+c)
+!pip install gensim
+from gensim.models import FastText
+sentences = [
+["i", "love", "machine", "learning"],
+["word", "embeddings", "are", "useful"],
+["fasttext", "handles", "unknown", "words"]
+]
+model = FastText(sentences, vector_size=50, min_count=1)
+model.wv.most_similar("learning")
