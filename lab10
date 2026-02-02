@@ -1,0 +1,33 @@
+#10 a
+from transformers import pipeline
+gen = pipeline("text-generation", model="gpt2")
+print(gen("Explain machine learning for beginners.", max_length=60)[0]["generated_text"])
+
+#b
+from transformers import pipeline
+from google.colab import files
+from PIL import Image
+
+f = files.upload()
+img = Image.open(list(f)[0]).convert("RGB")
+
+cap = pipeline("image-to-text", model="nlpconnect/vit-gpt2-image-captioning")
+print(cap(img)[0]["generated_text"])
+
+
+#c
+from gtts import gTTS
+from IPython.display import Audio
+
+tts = gTTS("Machine learning helps students learn smarter.", lang="en")
+tts.save("learn.mp3")
+Audio("learn.mp3")
+
+
+#d
+from transformers import pipeline
+summ = pipeline("summarization", model="facebook/bart-large-cnn")
+
+text = "Machine learning helps computers learn from data and is widely used in education and healthcare."
+print(summ(text, max_length=25, min_length=10, do_sample=False)[0]["summary_text"])
+
