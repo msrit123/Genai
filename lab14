@@ -1,0 +1,44 @@
+a)
+!pip install diffusers transformers accelerate safetensors torch -q
+
+from diffusers import StableDiffusionPipeline
+import torch
+from IPython.display import display
+
+pipe = StableDiffusionPipeline.from_pretrained(
+    "runwayml/stable-diffusion-v1-5",
+    torch_dtype=torch.float16
+).to("cuda")
+
+img = pipe("Futuristic city with flying cars at sunset").images[0]
+display(img)
+
+b)
+from diffusers import StableDiffusionImg2ImgPipeline
+from google.colab import files
+from PIL import Image
+import torch
+from IPython.display import display
+
+f = files.upload()
+init_img = Image.open(list(f)[0]).convert("RGB").resize((512,512))
+
+pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
+    "runwayml/stable-diffusion-v1-5",
+    torch_dtype=torch.float16
+).to("cuda")
+
+out = pipe(
+    prompt="Van Gogh painting style",
+    image=init_img,
+    strength=0.6
+).images[0]
+
+display(out)
+
+c)
+p1 = "Cyberpunk style"
+p2 = "Cyberpunk style with neon reflections on wet streets, cinematic lighting"
+
+display(pipe(p1).images[0])
+display(pipe(p2).images[0])
