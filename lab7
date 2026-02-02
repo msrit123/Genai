@@ -1,0 +1,19 @@
+#7a
+!pip install gTTS -q
+from gtts import gTTS
+from IPython.display import Audio
+
+tts = gTTS("Machine learning helps computers learn from data.", lang="en")
+tts.save("speech.mp3")
+Audio("speech.mp3")
+
+#7b
+!pip install moviepy -q
+from google.colab import files
+from moviepy.editor import ImageClip
+
+u = files.upload()
+img = list(u.keys())[0]
+
+clip = ImageClip(img).set_duration(5)
+clip.write_videofile("image_video.mp4", fps=24)
