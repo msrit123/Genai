@@ -1,33 +1,23 @@
-#4)
 from gensim.downloader import load
 
-# Load GloVe model
+# Load pretrained GloVe embeddings
 model = load("glove-wiki-gigaword-50")
-print("GloVe model loaded successfully!")
+print("Model Loaded Successfully!")
 
 def solve_analogy(a, b, c):
     try:
-        result = model.most_similar(
-            positive=[b, c],
-            negative=[a],
-            topn=1
-        )
+        # b - a + c = ?
+        result = model.most_similar(positive=[b, c], negative=[a], topn=1)
         return result[0]
     except KeyError:
         return "One or more words not in vocabulary."
 
-# Allow user to enter custom analogy words
-while True:
-    print("\nEnter analogy words (A is to B as C is to ?)")
-    
-    a = input("Enter word A (or type exit): ").lower()
-    if a == "exit":
-        break
-        
-    b = input("Enter word B: ").lower()
-    c = input("Enter word C: ").lower()
+# User input
+a = input("Enter word A (e.g., doctor): ").lower()
+b = input("Enter word B (e.g., hospital): ").lower()
+c = input("Enter word C (e.g., teacher): ").lower()
 
-    res = solve_analogy(a, b, c)
+res = solve_analogy(a, b, c)
 
-    print("\nAnalogy Result:")
-    print(res)
+print("\nAnalogy Result:")
+print(f"{a} : {b} :: {c} : {res}")
