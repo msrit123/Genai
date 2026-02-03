@@ -1,40 +1,18 @@
-1) A job portal company wants to help users understand skill relationships 
-in the IT domain.
-# a) Load pre-trained word embeddings and take any input word from the user.
-Return top 5 similar words.
-Solution:
-!pip install gensim
+# -------- Similar skills --------
+skill = input("\nEnter a technical skill: ").lower()
 
-from gensim.models import KeyedVectors
-from gensim.downloader import load
+print("\nTop 5 similar skills:")
+try:
+    for word, score in model.most_similar(skill, topn=5):
+        print(f"{word} --> similarity: {score:.4f}")
+except KeyError:
+    print("Skill not found in vocabulary.")
 
-model = load("glove-wiki-gigaword-50")
-print("Model Loaded Successfully!")
+# -------- Odd one out --------
+skills = ["python", "java", "c++", "html", "ruby"]
 
-def find_similar_words(word, topn=5):
-    try:
-        similar = model.most_similar(word, topn=topn)
-        return similar
-    except KeyError:
-        return f"'{word}' not found in vocabulary."
-word = input("Enter a word: ")
-result = find_similar_words(word)
-
-b)
-print("\nTop similar words:")
-if isinstance(result, str):
-    print(result)
-else:
-    for w, score in result:
-        print(f"{w}  --> similarity: {score:.4f}")
-
-c)
-!pip install gensim
-from gensim.models import FastText
-sentences = [
-["i", "love", "machine", "learning"],
-["word", "embeddings", "are", "useful"],
-["fasttext", "handles", "unknown", "words"]
-]
-model = FastText(sentences, vector_size=50, min_count=1)
-model.wv.most_similar("learning")
+print("\nGiven skills:", skills)
+try:
+    print("Odd one out:", model.doesnt_match(skills))
+except KeyError:
+    print("Some skills not found in vocabulary.")
