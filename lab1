@@ -1,3 +1,11 @@
+!pip install gensim
+
+from gensim.models import KeyedVectors
+from gensim.downloader import load
+
+model = load("glove-wiki-gigaword-50")
+print("Model Loaded Successfully!")
+
 # -------- Similar skills --------
 skill = input("\nEnter a technical skill: ").lower()
 
