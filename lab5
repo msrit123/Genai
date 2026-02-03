@@ -8,9 +8,6 @@ from transformers import pipeline
 # GPT-2 for text generation
 generator = pipeline("text-generation", model="gpt2")
 
-# BART for summarization
-summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
-
 
 # ---------------------------------------------------
 # 1. Generate an exam notification for students
@@ -50,20 +47,33 @@ print(motivation[0]["generated_text"])
 # ---------------------------------------------------
 # 3. Summarize a given academic paragraph
 # ---------------------------------------------------
-paragraph = """
-Machine learning is a branch of artificial intelligence that focuses on building
-systems capable of learning from data and improving their performance over time.
-These systems are widely used in healthcare, finance, education and transportation.
-By identifying patterns in large datasets, machine learning models help in decision
-making, prediction and automation of complex processes.
-"""
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
-summary = summarizer(
-    paragraph,
-    max_length=40,
-    min_length=15,
-    do_sample=False
+tokenizer = AutoTokenizer.from_pretrained("facebook/bart-large-cnn")
+model = AutoModelForSeq2SeqLM.from_pretrained("facebook/bart-large-cnn")
+
+input_text = """ Machine learning is a subset of artificial intelligence that focuses on the
+development of algorithms that can learn and make predictions from data.
+It enables systems to automatically improve their performance without being
+explicitly programmed. Machine learning techniques are widely used in various
+applications such as email filtering, speech recognition, medical diagnosis,
+and self-driving cars. By analyzing large amounts of data, these algorithms
+can identify hidden patterns, make accurate predictions, and support
+decision-making processes across industries. As data continues to grow,
+machine learning plays an increasingly vital role in advancing automation
+and intelligent systems."""
+
+inputs = tokenizer([input_text], max_length=1024, return_tensors="pt", truncation=True)
+
+# Generate Summary
+summary_ids = model.generate(
+    inputs["input_ids"],
+    num_beams=4,
+    min_length=10,
+    max_length=20,
+    early_stopping=True
 )
 
-print("\n------ Summary ------\n")
-print(summary[0]["summary_text"])
+summary_text = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
+print(summary_text)
+
