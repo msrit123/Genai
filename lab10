@@ -25,9 +25,34 @@ Audio("learn.mp3")
 
 
 #d
-from transformers import pipeline
-summ = pipeline("summarization", model="facebook/bart-large-cnn")
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
-text = "Machine learning helps computers learn from data and is widely used in education and healthcare."
-print(summ(text, max_length=25, min_length=10, do_sample=False)[0]["summary_text"])
+tokenizer = AutoTokenizer.from_pretrained("facebook/bart-large-cnn")
+model = AutoModelForSeq2SeqLM.from_pretrained("facebook/bart-large-cnn")
+
+input_text = """ Machine learning is a subset of artificial intelligence that focuses on the
+development of algorithms that can learn and make predictions from data.
+It enables systems to automatically improve their performance without being
+explicitly programmed. Machine learning techniques are widely used in various
+applications such as email filtering, speech recognition, medical diagnosis,
+and self-driving cars. By analyzing large amounts of data, these algorithms
+can identify hidden patterns, make accurate predictions, and support
+decision-making processes across industries. As data continues to grow,
+machine learning plays an increasingly vital role in advancing automation
+and intelligent systems."""
+
+inputs = tokenizer([input_text], max_length=1024, return_tensors="pt", truncation=True)
+
+# Generate Summary
+summary_ids = model.generate(
+    inputs["input_ids"],
+    num_beams=4,
+    min_length=10,
+    max_length=20,
+    early_stopping=True
+)
+
+summary_text = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
+print(summary_text)
+
 
