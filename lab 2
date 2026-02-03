@@ -1,29 +1,23 @@
- # 2 A news analytics platform wants to compare the meaning of headlines.
-a)
-from gensim.downloader import load
-import numpy as np
-model = load("glove-wiki-gigaword-50")
-def sentence_vector(sentence):
-    words = sentence.lower().split()
-    word_vecs = [model[w] for w in words if w in model]
-    if not word_vecs:
-        return np.zeros(50)
-    return np.mean(word_vecs, axis=0)
-def similarity(s1, s2):
-    v1, v2 = sentence_vector(s1), sentence_vector(s2)
-    sim = np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
-    return sim
-s1 = input("Sentence 1: ")
-s2 = input("Sentence 2: ")
-print("\nSentence Similarity:", similarity(s1, s2))
 
-b)
-!pip install spacy 
-!python -m spacy download en_core_web_md 
-import spacy 
-nlp = spacy.load("en_core_web_md") 
-w1 = input("Enter first word: ") 
-w2 = input("Enter second word: ") 
-word1 = nlp(w1) 
-word2 = nlp(w2) 
-print("\nSimilarity Score:", word1.similarity(word2))
+!pip install spacy
+!python -m spacy download en_core_web_md
+
+import spacy
+
+nlp = spacy.load("en_core_web_md")
+
+# 1. Take two news headlines
+h1 = input("Enter headline 1: ")
+h2 = input("Enter headline 2: ")
+
+# 2. Sentence similarity
+doc1 = nlp(h1)
+doc2 = nlp(h2)
+
+print("Sentence similarity:", doc1.similarity(doc2))
+
+# 3. Keyword similarity (example: economy and finance)
+k1 = nlp("economy")
+k2 = nlp("finance")
+
+print("Keyword similarity (economy vs finance):", k1.similarity(k2))
